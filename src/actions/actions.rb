@@ -36,26 +36,27 @@ module Actions
           curr_position.col - 1
         ) 
     end    
-
-    def self.position_is_valid?(state, position)
-      is_invalid = ((position.row >= state.grid.rows ||
-        position.row < 0) || 
-        (position.col >= state.grid.cols ||
-        position.col < 0))
-      return false if is_invalid
-      return !(state.snake.positions.include? position)
-    end
-
-    def self.move_snake_to(state, next_position)
-      new_positions =  [next_position] + state.snake.positions[0...-1]
-      state.snake.positions = new_positions
-      state
-    end
-
-    def self.end_game(state)
-      state.game_finished = true
-      state
-    end
-
   end
+  
+  def self.position_is_valid?(state, position)
+    is_invalid = ((position.row >= state.grid.rows ||
+      position.row < 0) || 
+      (position.col >= state.grid.cols ||
+      position.col < 0))
+    return false if is_invalid
+    return !(state.snake.positions.include? position)
+  end
+
+  def self.move_snake_to(state, next_position)
+    new_positions =  [next_position] + state.snake.positions[0...-1]
+    state.snake.positions = new_positions
+    state
+  end
+
+  def self.end_game(state)
+    state.game_finished = true
+    state
+  end
+
+  
 end
