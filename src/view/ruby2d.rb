@@ -14,7 +14,9 @@ module View
 				set(
 						title: "Snake",
 						width: @pixel_size * state.grid.cols,
-						height: @pixel_size * state.grid.rows
+						height: @pixel_size * state.grid.rows,
+						background: 'navy'
+
 				)
 				on :key_down do |event|
 					handle_key_event(event)
