@@ -23,11 +23,19 @@ module View
 		end
 
 		def render(state)
+			extend Ruby2D::DSL
+			close if state.game_finished
 			render_food(state) 
 			render_snake(state)
 		end
 
 		private
+
+		def self.generate_food(state)
+			new_food = Model::Food.new(rand(state.grid.rows), rand(state.grid.cols))
+			state.food = new_food
+			state
+		end
 
 		def render_food(state)
       @food.remove if @food
@@ -37,7 +45,7 @@ module View
         x: food.col * @pixel_size,
         y: food.row * @pixel_size,
         size: @pixel_size,
-        color: 'yellow'
+        color: 'orange'
       )
     end
 
@@ -46,31 +54,26 @@ module View
 			extend Ruby2D::DSL
 			snake = state.snake
 			@snake_positions = snake.positions.map do |pos|
-        Square.new(
-          x: pos.col * @pixel_size,
-          y: pos.row * @pixel_size,
-          size: @pixel_size,
-          color: 'green'
-        )
-      end
+				Square.new(
+					x: pos.col * @pixel_size,
+					y: pos.row * @pixel_size,
+					size: @pixel_size,
+					color: 'purple',
+				)
+			end
 		end
 
 		def handle_key_event(event)
-			puts event.key
 			case event.key
 			when "up"
-        # cambiar direccion hacia arriba
-        @app.send_action(:change_direction, Model::Direction::UP)
-      when "down"
-        # cambiar direccion hacia abajo
-        @app.send_action(:change_direction, Model::Direction::DOWN)
-      when "left"
-        # cambiar direccion hacia izquierda
-        @app.send_action(:change_direction, Model::Direction::LEFT)
-      when "right"
-        # cambiar direccion hacia derecha
-        @app.send_action(:change_direction, Model::Direction::RIGHT)
-      end
+				@app.send_action(:change_direction, Model::Direction::UP)
+			when "down"
+				@app.send_action(:change_direction, Model::Direction::DOWN)
+			when "left"
+				@app.send_action(:change_direction, Model::Direction::LEFT)
+			when "right"
+				@app.send_action(:change_direction, Model::Direction::RIGHT)
+			end
 		end
 
 	end

@@ -2,7 +2,10 @@ module Actions
   def self.move_snake(state)
     next_direction = state.curr_direction
     next_position  = calc_next_position(state)
-    if position_is_valid?(state, next_position)
+    if position_is_food?(state, next_position)
+      state = grow_snake_to(state, next_position)
+      generate_food(state)
+    elsif position_is_valid?(state, next_position)
       move_snake_to(state, next_position)
     else
       end_game(state)
@@ -15,9 +18,26 @@ module Actions
     else
       puts "Invalid direction "
     end
+    state
   end
 
   private
+
+  def self.position_is_food?(state, next_position)
+    state.food.row == next_position.row && state.food.col == next_position.col
+  end
+
+  def self.generate_food(state)
+    new_food = Model::Food.new(rand(state.grid.rows), rand(state.grid.cols))
+    state.food = new_food
+    state
+  end
+
+  def self.grow_snake_to(state, next_position)
+    next_snake = [next_position] + state.snake.positions
+    state.snake.positions = next_snake
+    state
+  end
 
   def self.calc_next_position(state)
     
@@ -25,22 +45,18 @@ module Actions
 
     case state.curr_direction
     when Model::Direction::UP
-      # decrementar fila
       return Model::Coord.new(
           curr_position.row - 1, 
           curr_position.col)
     when Model::Direction::RIGHT
-      # incrementar col
       return Model::Coord.new(
           curr_position.row, 
           curr_position.col + 1)
     when Model::Direction::DOWN
-      # incrementar fila
       return Model::Coord.new(
           curr_position.row + 1,
           curr_position.col)
     when Model::Direction::LEFT
-      # decrementar col
       return Model::Coord.new(
           curr_position.row, 
           curr_position.col - 1)
