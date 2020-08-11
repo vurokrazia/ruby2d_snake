@@ -9,6 +9,14 @@ module Actions
     end
   end
 
+  def self.change_direction(state, direction)
+    if next_direction_is_valid?(state, direction)
+      state.curr_direction = direction
+    else
+      puts "Invalid direction "
+    end
+  end
+
   private
 
   def self.calc_next_position(state)
@@ -16,27 +24,27 @@ module Actions
     curr_position = state.snake.positions.first
 
     case state.curr_direction
-      when Model::Direction::UP    
-        return Model::Coord.new(
+    when Model::Direction::UP
+      # decrementar fila
+      return Model::Coord.new(
           curr_position.row - 1, 
-          curr_position.col
-        ) 
-      when Model::Direction::RIGHT 
-        return Model::Coord.new(
+          curr_position.col)
+    when Model::Direction::RIGHT
+      # incrementar col
+      return Model::Coord.new(
           curr_position.row, 
-          curr_position.col + 1
-        ) 
-      when Model::Direction::DOWN  
-        return Model::Coord.new(
-          curr_position.row  + 1, 
-          curr_position.col
-        ) 
-      when Model::Direction::LEFT  
-        return Model::Coord.new(
+          curr_position.col + 1)
+    when Model::Direction::DOWN
+      # incrementar fila
+      return Model::Coord.new(
+          curr_position.row + 1,
+          curr_position.col)
+    when Model::Direction::LEFT
+      # decrementar col
+      return Model::Coord.new(
           curr_position.row, 
-          curr_position.col - 1
-        ) 
-    end  
+          curr_position.col - 1)
+    end
   end
   
   def self.position_is_valid?(state, position)
@@ -48,24 +56,18 @@ module Actions
     return !(state.snake.positions.include? position)
   end
 
-  def self.change_direction(state, direction)
-    if next_direction_is_valid?(state, direction)
-      state.curr_direction = direction
-    else
-      puts "Invalid direction "
-    end
-  end
+  
 
   def self.next_direction_is_valid? state, direction
     case state.curr_direction
     when Model::Direction::UP
-      return true if direction != Model::Direction::UP
-    when Model::Direction::DOWN
       return true if direction != Model::Direction::DOWN
+    when Model::Direction::DOWN
+      return true if direction != Model::Direction::UP
     when Model::Direction::RIGHT
-      return true if direction != Model::Direction::RIGHT
-    when Model::Direction::LEFT
       return true if direction != Model::Direction::LEFT
+    when Model::Direction::LEFT
+      return true if direction != Model::Direction::RIGHT
     end
     return false
   end
